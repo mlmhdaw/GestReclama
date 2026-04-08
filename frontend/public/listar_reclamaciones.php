@@ -1,5 +1,8 @@
 <?php
 
+  require_once '../../backend/auth/auth_check.php';
+  require_once '../../backend/config/database.php';
+  
   $pdo = Database::getConnection();
 
   $usuario_id = $_SESSION['usuario_id'];
@@ -8,7 +11,7 @@
 
   $stmt -> execute (['usuario_id' => $usuario_id]);
 
-  $reclamaciones = $stmt -> fetchAll();
+  $reclamaciones = $stmt -> fetchAll(); 
 
 ?>
 
