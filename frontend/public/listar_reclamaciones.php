@@ -53,5 +53,9 @@
         </tbody>
       </table>
     </div>
+
+    <br>
+
+    <a href='dashboard.php'>Volver a panel principal</a>
   </body>
 </html>
