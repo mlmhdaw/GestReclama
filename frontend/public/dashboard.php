@@ -1,10 +1,7 @@
 <?php
 
-session_start();
+  require_once '../../backend/auth/auth_check.php';
 
-if (!isset($_SESSION['user_id'])) {
-  header("location: login.php");
-  exit;
-} else {
-  echo "<a href='logout.php'>Cerrar sesión</a>";
-}
+?>
+
+<a href='logout.php'>Cerrar sesión</a>
