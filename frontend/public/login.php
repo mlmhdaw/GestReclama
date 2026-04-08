@@ -30,8 +30,8 @@
         
         session_regenerate_id(true);
 
-        $_SESSION['user_id']    = $usuario['id'];
-        $_SESSION['email'] = $usuario['email'];
+        $_SESSION['user_id'] = $usuario['id'];
+        $_SESSION['email']   = $usuario['email'];
 
         header("location: dashboard.php");
         exit;
