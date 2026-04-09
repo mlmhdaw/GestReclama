@@ -2,15 +2,43 @@
 
   require_once '../../backend/auth/auth_check.php';
   require_once '../../backend/config/database.php';
-  
-  $pdo = Database::getConnection();
+      
+  $desde = $_GET['desde'] ?? '';
+  $hasta = $_GET['hasta'] ?? '';
+  $id    = $_GET['id']    ?? '';
 
+  $pdo        = Database::getConnection();
   $usuario_id = $_SESSION['usuario_id'];
 
-  $stmt = $pdo -> prepare("SELECT id, descripcion, fecha FROM reclamaciones WHERE usuario_id = :usuario_id");
+  $condiciones = [];
+  $params      = ['usuario_id' => $usuario_id];
 
-  $stmt -> execute (['usuario_id' => $usuario_id]);
+  if (!empty($desde)) {
+    $condiciones[]   = "fecha >= :desde";
+    $params['desde'] = $desde;
+  }
 
+  if (!empty($hasta)) {
+    $condiciones[]   = "fecha <= :hasta";
+    $params['hasta'] = $hasta;
+  }
+
+  if (!empty($id) && is_numeric($id)) {
+    $condiciones[] = "id = :id";
+    $params['id']  = $id;
+  }
+ 
+  $consulta = "SELECT r.id, r.descripcion, r.fecha 
+               FROM reclamaciones r
+               WHERE usuario_id = :usuario_id";
+
+  if (!empty($condiciones)) {
+    $filtros = implode(" AND ", $condiciones);
+    $consulta .= " AND " . $filtros;
+  }
+  
+  $stmt          = $pdo -> prepare($consulta);
+  $stmt          -> execute ($params);
   $reclamaciones = $stmt -> fetchAll(); 
 
 ?>
@@ -26,6 +54,33 @@
   </head>
 
   <body>
+
+    <form id="form_filtros" method="GET" action="listar_reclamaciones.php" class="form-filtros">
+      <fieldset>
+        <legend>Filtros de búsqueda de reclamaciones</legend>
+
+        <?php if (!empty($error)): ?>
+          <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
+
+        <label for="desde">Desde: </label>
+        <input type="date" id="desde" name="desde">
+
+        <label for="hasta">Hasta: </label>
+        <input type="date" id="hasta" name="hasta">
+      
+        <br> <br>
+        
+        <label for="id">Id reclamación: </label>
+        <input type="text" id="id" name="id" placeholder="0000">
+
+      </fieldset>
+
+      <br>
+
+      <button type="submit" id="btn_filtrar" class="btn">Filtrar</button>
+    </form>
+
     <div>
       <table>
         <thead>
