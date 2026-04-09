@@ -64,15 +64,15 @@
         <?php endif; ?>
 
         <label for="desde">Desde: </label>
-        <input type="date" id="desde" name="desde">
+        <input type="date" id="desde" name="desde" value="<?= $desde ?>">
 
         <label for="hasta">Hasta: </label>
-        <input type="date" id="hasta" name="hasta">
+        <input type="date" id="hasta" name="hasta" value="<?= $hasta ?>">
       
         <br> <br>
         
         <label for="id">Id reclamación: </label>
-        <input type="text" id="id" name="id" placeholder="0000">
+        <input type="text" id="id" name="id" value="<?= $id ?>">
 
       </fieldset>
 
