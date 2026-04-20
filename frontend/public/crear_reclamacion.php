@@ -3,28 +3,32 @@
   require_once '../../backend/auth/auth_check.php';
   require_once '../../backend/config/database.php';
 
+  $pdo = Database::getConnection();
+  
+  $stmt_franq = $pdo -> query("SELECT id, nombre FROM franquicias WHERE activo = 1 ORDER BY nombre ASC");
+  $franquicias = $stmt_franq -> fetchAll();
+  $franquicia_id = $_POST['franquicia_id'] ?? '';
+
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $descripcion = $_POST['descripcion'] ?? '';
-
     $descripcion = trim($descripcion);
 
-    if (empty($descripcion)) {
+    if (empty($descripcion) || empty($franquicia_id)) {
       $error = "Todos los campos son obligatorios";
     } else {
-
-      $pdo = Database::getConnection();
 
       $usuario_id = $_SESSION['usuario_id'];
 
       $stmt = $pdo -> prepare("
-        INSERT INTO reclamaciones (usuario_id, descripcion)
-        VALUES (:usuario_id, :descripcion)
+        INSERT INTO reclamaciones (usuario_id, descripcion, franquicia_id)
+        VALUES (:usuario_id, :descripcion, :franquicia_id)
       ");
 
       $stmt -> execute([
-        ':usuario_id' => $usuario_id,
-        ':descripcion' => $descripcion
+        ':usuario_id'  => $usuario_id,
+        ':descripcion' => $descripcion,
+        ':franquicia_id'  => $franquicia_id
       ]);
 
       header("location: dashboard.php");
@@ -54,6 +58,19 @@
 
         <label for="descripcion">Descripción: </label>
         <textarea id="descripcion" name="descripcion" placeholder="Descripción de la reclamación a registrar" required></textarea>
+
+        <br> <br>
+
+        <label for="franquicia_id">Franquicia de registro: </label>
+        <select id="franquicia_id" name="franquicia_id">
+          <option value="">Seleccione franquicia</option>
+          <?php foreach ($franquicias as $franq): ?>
+            <option value="<?= $franq['id'] ?>"
+              <?= ($franquicia_id == $franq['id']) ? 'selected' : '' ?>>
+              <?= $franq['id'] . "  ---  " . $franq['nombre']?>
+            </option>
+          <?php endforeach; ?>
+        </select>
       </fieldset>
 
       <br>

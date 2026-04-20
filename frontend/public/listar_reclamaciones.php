@@ -3,34 +3,60 @@
   require_once '../../backend/auth/auth_check.php';
   require_once '../../backend/config/database.php';
       
-  $desde = $_GET['desde'] ?? '';
-  $hasta = $_GET['hasta'] ?? '';
-  $id    = $_GET['id']    ?? '';
-
   $pdo        = Database::getConnection();
+
+  $stmt_franquicias  = $pdo -> query("SELECT id, nombre FROM franquicias WHERE activo = 1 ORDER BY nombre ASC");
+  $franquicias = $stmt_franquicias -> fetchAll();
+
+  $stmt_estados = $pdo -> query("SELECT id, nombre FROM estados WHERE activo = 1 ORDER BY id ASC");
+  $estados = $stmt_estados -> fetchAll();
+
+  $franquicia_id = $_GET['franquicia_id'] ?? '';
+  $estado_id     = $_GET['estado_id']     ?? '';
+  $desde         = $_GET['desde']         ?? '';
+  $hasta         = $_GET['hasta']         ?? '';
+  $id            = $_GET['id']            ?? '';
+
   $usuario_id = $_SESSION['usuario_id'];
 
   $condiciones = [];
   $params      = ['usuario_id' => $usuario_id];
 
+  if (!empty($franquicia_id)) {
+    $condiciones[]        = "r.franquicia_id = :franquicia";
+    $params['franquicia'] = $franquicia_id;
+  }
+
+  if (!empty($estado_id)) {
+    $condiciones[]    = "r.estado_id = :estado";
+    $params['estado'] = $estado_id;
+  }
+  
   if (!empty($desde)) {
-    $condiciones[]   = "fecha >= :desde";
+    $condiciones[]   = "r.fecha >= :desde";
     $params['desde'] = $desde;
   }
 
   if (!empty($hasta)) {
-    $condiciones[]   = "fecha <= :hasta";
+    $condiciones[]   = "r.fecha <= :hasta";
     $params['hasta'] = $hasta;
   }
 
   if (!empty($id) && is_numeric($id)) {
-    $condiciones[] = "id = :id";
+    $condiciones[] = "r.id = :id";
     $params['id']  = $id;
   }
  
-  $consulta = "SELECT r.id, r.descripcion, r.fecha 
+  $consulta = "SELECT
+                r.id,
+                r.descripcion,
+                r.fecha,
+                f.nombre AS f_nombre,
+                e.nombre AS e_nombre
                FROM reclamaciones r
-               WHERE usuario_id = :usuario_id";
+               JOIN franquicias f ON r.franquicia_id = f.id
+               JOIN estados e ON r.estado_id = e.id
+               WHERE r.usuario_id = :usuario_id AND r.activo = 1";
 
   if (!empty($condiciones)) {
     $filtros = implode(" AND ", $condiciones);
@@ -63,6 +89,30 @@
           <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
 
+        <label for="franquicia_id">Franquicia: </label>
+        <select id="franquicia_id" name="franquicia_id">
+          <option value="">Seleccione franquicia</option>
+          <?php foreach ($franquicias as $franq): ?>
+            <option value="<?= $franq['id'] ?>"
+              <?= ($franquicia_id == $franq['id']) ? 'selected' : '' ?>>
+              <?= $franq['id'] . "  ---  " . $franq['nombre']?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+
+        <label for="estado_id">Estado: </label>
+        <select id="estado_id" name="estado_id">
+          <option value="">Seleccione estado</option>
+          <?php foreach ($estados as $est): ?>
+            <option value="<?= $est['id'] ?>"
+              <?= ($estado_id == $est['id']) ? 'selected' : '' ?>>
+              <?= $est['id'] . "  ---  " . $est['nombre']?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        
+        <br> <br>
+
         <label for="desde">Desde: </label>
         <input type="date" id="desde" name="desde" value="<?= $desde ?>">
 
@@ -88,6 +138,8 @@
             <th>ID</th>
             <th>Descripción</th>
             <th>Fecha</th>
+            <th>Franquicia</th>
+            <th>Estado</th>
           </tr>
         </thead>
 
@@ -98,11 +150,13 @@
                 <td><?= $reclam['id'] ?></td>
                 <td><?= $reclam['descripcion'] ?></td>
                 <td><?= $reclam['fecha'] ?></td>
+                <td><?= $reclam['f_nombre'] ?></td>
+                <td><?= $reclam['e_nombre'] ?></td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="3">No hay reclamaciones para este usuario</td>
+              <td colspan="5">No hay reclamaciones para este usuario</td>
             </tr>
           <?php endif; ?>
         </tbody>
