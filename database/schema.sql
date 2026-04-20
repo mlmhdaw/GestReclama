@@ -35,3 +35,17 @@ CREATE TABLE reclamaciones (
   FOREIGN KEY (estado_id)     REFERENCES estados(id),
   FOREIGN KEY (franquicia_id) REFERENCES franquicias(id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE acciones_reclamacion (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  reclamacion_id INT NOT NULL,
+  usuario_id INT NOT NULL,
+  estado_id INT NOT NULL,
+  comentario TEXT,
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (reclamacion_id) REFERENCES reclamaciones(id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (usuario_id)     REFERENCES usuarios(id),
+  FOREIGN KEY (estado_id)      REFERENCES estados(id)
+) ENGINE=InnoDB;

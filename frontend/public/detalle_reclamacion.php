@@ -32,6 +32,7 @@
                 WHERE r.id = :id AND 
                       r.usuario_id = :usuario_id AND
                       r.activo = 1
+                LIMIT 1
   ";
 
   $stmt = $pdo -> prepare($consulta);
@@ -65,5 +66,7 @@
       <p><strong>Estado actual: </strong> <?= $reclamacion['e_nombre'] ?></p>
       <p><strong>Descripción: </strong> <?= $reclamacion['descripcion'] ?></p>
     </fieldset>
+
+    <a href="listar_reclamaciones.php">Volver al listado</a>
   </body>
 </html>
