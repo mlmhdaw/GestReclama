@@ -25,6 +25,7 @@ CREATE TABLE reclamaciones (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario_id INT NOT NULL,
   descripcion TEXT NOT NULL,
+  tipo VARCHAR(100) NOT NULL DEFAULT "Servicio",
   estado_id INT DEFAULT 1 NOT NULL,
   franquicia_id INT NOT NULL,
   activo BOOLEAN DEFAULT TRUE,

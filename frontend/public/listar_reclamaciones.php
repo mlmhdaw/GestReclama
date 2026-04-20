@@ -3,7 +3,7 @@
   require_once '../../backend/auth/auth_check.php';
   require_once '../../backend/config/database.php';
       
-  $pdo        = Database::getConnection();
+  $pdo = Database::getConnection();
 
   $stmt_franquicias  = $pdo -> query("SELECT id, nombre FROM franquicias WHERE activo = 1 ORDER BY nombre ASC");
   $franquicias = $stmt_franquicias -> fetchAll();
@@ -136,10 +136,11 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Descripción</th>
-            <th>Fecha</th>
             <th>Franquicia</th>
+            <th>Fecha</th>
             <th>Estado</th>
+            <th>Descripción</th>
+            <th>Opción</th>
           </tr>
         </thead>
 
@@ -148,15 +149,19 @@
             <?php foreach ($reclamaciones as $reclam): ?>
               <tr>
                 <td><?= $reclam['id'] ?></td>
-                <td><?= $reclam['descripcion'] ?></td>
-                <td><?= $reclam['fecha'] ?></td>
                 <td><?= $reclam['f_nombre'] ?></td>
+                <td><?= $reclam['fecha'] ?></td>
                 <td><?= $reclam['e_nombre'] ?></td>
+                <td><?= $reclam['descripcion'] ?></td>
+                <td>
+                  <a href="detalle_reclamacion.php?id=<?=$reclam['id'] ?>">
+                  Ver detalle
+                </td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="5">No hay reclamaciones para este usuario</td>
+              <td colspan="6">No hay reclamaciones para este usuario</td>
             </tr>
           <?php endif; ?>
         </tbody>
