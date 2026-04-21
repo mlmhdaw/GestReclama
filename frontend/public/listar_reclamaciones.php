@@ -155,7 +155,8 @@
                 <td><?= $reclam['descripcion'] ?></td>
                 <td>
                   <a href="detalle_reclamacion.php?id=<?=$reclam['id'] ?>">
-                  Ver detalle
+                    Ver detalle
+                  </a>
                 </td>
               </tr>
             <?php endforeach; ?>

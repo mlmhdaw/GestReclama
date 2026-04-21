@@ -38,6 +38,22 @@
       $error = "Todos los campos son obligatorios";
     } else {
 
+      $stmt_check = $pdo->prepare("
+        SELECT id
+        FROM reclamaciones
+        WHERE id = :id AND usuario_id = :usuario_id
+      ");
+
+      $stmt_check->execute([
+        'id' => $reclamacion_id,
+        'usuario_id' => $usuario_id
+      ]);
+
+      if (!$stmt_check->fetch()) {
+        header("Location: listar_reclamaciones.php");
+        exit;
+      }
+
       $stmt = $pdo -> prepare("
         INSERT INTO acciones_reclamacion (
           reclamacion_id, 
@@ -98,10 +114,14 @@
   $stmt -> execute ($params_reclamacion);
   $reclamacion = $stmt -> fetch(PDO::FETCH_ASSOC);
 
+  if (!$reclamacion) {
+    header("Location: listar_reclamaciones.php");
+    exit;
+  }
+
   $consulta_acciones = 
     "SELECT
       a.id,
-      a.estado_id,
       a.comentario,
       a.fecha,
       est.nombre AS est_nombre
@@ -117,12 +137,6 @@
   $stmt = $pdo -> prepare($consulta_acciones);
   $stmt -> execute ($params_acciones);
   $acciones = $stmt -> fetchAll(PDO::FETCH_ASSOC);
-
-
-  if (!$reclamacion) {
-    header("Location: listar_reclamaciones.php");
-    exit;
-  }
 
 ?>
 
@@ -166,11 +180,12 @@
             <?php foreach ($acciones as $acc): ?>
               <tr>
                 <td><?= $acc['fecha'] ?></td>
-                <td><?= $acc['estado_id'] ?></td>
+                <td><?= $acc['est_nombre'] ?></td>
                 <td><?= $acc['comentario'] ?></td>
                 <td>
                   <a href="detalle_accion.php?id=<?=$acc['id'] ?>">
-                  Ver detalle
+                    Ver detalle
+                  </a>
                 </td>
               </tr>
             <?php endforeach; ?>

@@ -3,9 +3,12 @@ CREATE TABLE usuarios (
   nombre VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  rol VARCHAR(100) NOT NULL,
+  rol_id VARCHAR(100) NOT NULL,
   activo BOOLEAN DEFAULT TRUE,
   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+  FOREIGN KEY (rol_id) REFERENCES roles(id)
+
 ) ENGINE=InnoDB;
 
 CREATE TABLE estados (
@@ -48,4 +51,10 @@ CREATE TABLE acciones_reclamacion (
     ON DELETE CASCADE,
   FOREIGN KEY (usuario_id)     REFERENCES usuarios(id),
   FOREIGN KEY (estado_id)      REFERENCES estados(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  activo BOOLEAN DEFAULT TRUE
 ) ENGINE=InnoDB;
