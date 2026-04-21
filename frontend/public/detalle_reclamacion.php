@@ -8,7 +8,7 @@
   $reclamacion_id = $_GET['id'] ?? '';
 
   $stmt_estados = $pdo -> query("SELECT id, nombre FROM estados ORDER BY id ASC");
-  $estados = $stmt_estados -> fetchAll();
+  $estados      = $stmt_estados -> fetchAll();
 
   if (empty($reclamacion_id) || !is_numeric($reclamacion_id)) {
     header("Location: listar_reclamaciones.php");
@@ -17,16 +17,21 @@
 
   $usuario_id = $_SESSION['usuario_id'];
 
-  $params = [
-    'id' => $reclamacion_id,
+  $params_reclamacion = [
+    'id'         => $reclamacion_id,
     'usuario_id' => $usuario_id
   ];
 
-  $estado_seleccionado   = $_POST['estado_id'] ?? '';
+  $params_acciones = [
+    'reclamacion_id' => $reclamacion_id,
+    'usuario_id'     => $usuario_id
+  ];
+
+  $estado_seleccionado  = $_POST['estado_id'] ?? '';
   $comentario_insertado = $_POST['comentario'] ?? '';
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $estado_id = $estado_seleccionado;
+    $estado_id  = $estado_seleccionado;
     $comentario = trim($comentario_insertado);
 
     if (empty($estado_id) || !is_numeric($estado_id) || empty($comentario)) {
@@ -58,11 +63,11 @@
       $stmt_update = $pdo -> prepare("
         UPDATE reclamaciones
         SET estado_id = :estado_id
-        WHERE id = :reclamacion_id
+        WHERE id      = :reclamacion_id
       ");
 
       $stmt_update -> execute([
-        'estado_id' => $estado_id,
+        'estado_id'      => $estado_id,
         'reclamacion_id' => $reclamacion_id
       ]);
 
@@ -71,25 +76,48 @@
     }
   }
 
-  $consulta = "SELECT 
-                  r.id, 
-                  r.descripcion, 
-                  r.fecha,
-                  r.tipo,
-                  f.nombre AS f_nombre,
-                  e.nombre AS e_nombre
-                FROM reclamaciones r
-                JOIN franquicias f ON f.id = r.franquicia_id
-                JOIN estados e ON e.id = r.estado_id
-                WHERE r.id = :id AND 
-                      r.usuario_id = :usuario_id AND
-                      r.activo = 1
-                LIMIT 1
+  $consulta_reclamacion =
+    "SELECT 
+      r.id, 
+      r.descripcion, 
+      r.fecha,
+      r.tipo,
+      f.nombre AS f_nombre,
+      e.nombre AS e_nombre
+    FROM reclamaciones r
+    JOIN franquicias f ON f.id = r.franquicia_id
+    JOIN estados e     ON e.id = r.estado_id
+    WHERE
+      r.id = :id AND 
+      r.usuario_id = :usuario_id AND
+      r.activo = 1
+    LIMIT 1
   ";
 
-  $stmt = $pdo -> prepare($consulta);
-  $stmt -> execute ($params);
+  $stmt = $pdo -> prepare($consulta_reclamacion);
+  $stmt -> execute ($params_reclamacion);
   $reclamacion = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+  $consulta_acciones = 
+    "SELECT
+      a.id,
+      a.estado_id,
+      a.comentario,
+      a.fecha,
+      est.nombre AS est_nombre
+    FROM acciones_reclamacion a
+    JOIN estados est       ON est.id = a.estado_id
+    JOIN reclamaciones rec ON rec.id = a.reclamacion_id
+    WHERE
+      a.reclamacion_id = :reclamacion_id AND
+      rec.usuario_id = :usuario_id
+    ORDER BY a.fecha DESC
+  ";
+
+  $stmt = $pdo -> prepare($consulta_acciones);
+  $stmt -> execute ($params_acciones);
+  $acciones = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
 
   if (!$reclamacion) {
     header("Location: listar_reclamaciones.php");
@@ -118,6 +146,42 @@
       <p><strong>Franquicia: </strong> <?= $reclamacion['f_nombre'] ?></p>
       <p><strong>Estado actual: </strong> <?= $reclamacion['e_nombre'] ?></p>
       <p><strong>Descripción: </strong> <?= $reclamacion['descripcion'] ?></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Historial de acciones</legend>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Comentario</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <?php if (!empty($acciones)): ?>
+            <?php foreach ($acciones as $acc): ?>
+              <tr>
+                <td><?= $acc['fecha'] ?></td>
+                <td><?= $acc['estado_id'] ?></td>
+                <td><?= $acc['comentario'] ?></td>
+                <td>
+                  <a href="detalle_accion.php?id=<?=$acc['id'] ?>">
+                  Ver detalle
+                </td>
+              </tr>
+            <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="4">No hay acciones para esta reclamación</td>
+              </tr>
+            <?php endif; ?>
+        </tbody>
+      </table>
+
     </fieldset>
 
     <form method="POST" action="detalle_reclamacion.php?id=<?= $reclamacion_id ?>">

@@ -76,6 +76,7 @@
       <br>
 
       <button type="submit" id="btn_registrar" class="btn">Registrar</button>
+      <a href='dashboard.php'>Volver a panel principal</a>
     </form>
   </body>
 </html>
