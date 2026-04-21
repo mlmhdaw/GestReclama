@@ -3,24 +3,30 @@
   session_start();
 
   require_once __DIR__ . '/../../backend/config/database.php';
-
+  require_once __DIR__ . '/../../backend/helpers/validator.php';
+  require_once __DIR__ . '/../config/app.php';
+  
+  $tituloVista = "Login";
+  $sinSidebar  = true;
+  
   $error = '';
+  $email = '';
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $email    = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $email    = strtolower(limpiarTexto($_POST['email']));
+    $password = limpiarTexto($_POST['password'] ?? '');
     
-    if (!$email != '' && !$password != '') {
+    if (
+      estaVacio($email) || 
+      estaVacio($password) 
+    ) {
       $error = "Todos los campos son obligatorios";
     } else {
 
-      $email = strtolower(trim($email));
-      $password = trim($password);
-
       $pdo = Database::getConnection();
 
-      $stmt = $pdo -> prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
+      $stmt = $pdo -> prepare("SELECT id, email, password FROM usuarios WHERE email = :email LIMIT 1");
       $stmt -> execute(['email' => $email]);
       $usuario = $stmt -> fetch();
 
@@ -33,44 +39,38 @@
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['email']   = $usuario['email'];
 
-        header("location: dashboard.php");
+        header("location: /");
         exit;
       }
     }
   }
+
+  ob_start();
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+<form id="form_login" method="POST" action="/login.php" class="form-login">
+  <fieldset>
+    <legend>Acceso a GestReclama</legend>
 
-    <link rel="stylesheet" href="../assets/css/styles.css">
-  </head>
+    <?php if (!empty($error)): ?>
+      <p class="error"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
 
-  <body>
-    <form id="form_login" method="POST" action="login.php" class="form-login">
-      <fieldset>
-        <legend>Acceso a GestReclama</legend>
+    <label for="email">Email: </label>
+    <input type="email" id="email" name="email" value="<?= htmlspecialchars($email) ?>" placeholder="miemail@dominio.es" required>
 
-        <?php if (!empty($error)): ?>
-          <p class="error"><?php echo $error; ?></p>
-        <?php endif; ?>
+    <br>
 
-        <label for="email">Email: </label>
-        <input type="email" id="email" name="email" placeholder="miemail@dominio.es" required>
+    <label for="password">Contraseña: </label>
+    <input type="password" id="password" name="password" placeholder="******" required>
+  </fieldset>
 
-        <br>
+  <br>
 
-        <label for="password">Contraseña: </label>
-        <input type="password" id="password" name="password" placeholder="******" required>
-      </fieldset>
+  <button type="submit" id="btn_entrar" class="btn">Entrar</button>
+</form>
 
-      <br>
-
-      <button type="submit" id="btn_entrar" class="btn">Entrar</button>
-    </form>
-  </body>
-</html>
+<?php
+  $contenido = ob_get_clean();
+  require_once __DIR__ . '/../layout/layout.php';
+?>

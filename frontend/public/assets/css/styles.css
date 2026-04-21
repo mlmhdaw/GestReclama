@@ -1,0 +1,147 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+}
+
+html, body {
+    font-family: 'Inter', sans-serif;
+    color: #E8EAEF;
+    margin: 0;
+    height: 100%;
+}
+
+.header {
+
+    position: relative;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #1C4293;
+    color: #E8EAEF;
+    padding: 2rem 5rem;
+
+    border: 2px solid #E8EAEF;
+    border-radius: 10px 10px 0 0;
+    box-sizing: border-box;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.header-left img {
+    height: 20px;
+}
+
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 16px;
+}
+
+.header-right {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.layout {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+
+    width: 240px;
+    background-color: #1C4293;
+    color: #E8EAEF;
+
+    border-left: 2px solid #E8EAEF;
+    border-radius: 0 0 0 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 10px;
+}
+
+.sidebar-item {
+    color: #E8EAEF;
+    text-decoration: none;
+
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 5px;
+}
+
+.sidebar-item.active {
+    box-shadow: 0 2px 6px #FFFFFF;
+    background-color: #2F6CEE;
+    color: #FFFFFF;
+}
+
+.sidebar-item:hover {
+    box-shadow: 0 2px 6px #FFFFFF;
+    text-decoration: none;
+    background-color: #E8EAEF;
+    color: #1C4293;
+}
+
+.sidebar-item.active:hover {
+    box-shadow: 0 2px 6px #FFFFFF;
+    background-color: #2F6CEE;
+    color: #FFFFFF;
+}
+
+.sidebar-footer {
+    height: 450px;
+
+    padding: 1rem;
+    border-top: 1px solid #E8EAEF;
+}
+
+.logout {
+    color: #ddd;
+}
+
+.content {
+    flex: 1;
+    padding: 30px;
+    background-color: #E8EAEF;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
