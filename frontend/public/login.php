@@ -26,7 +26,12 @@
 
       $pdo = Database::getConnection();
 
-      $stmt = $pdo -> prepare("SELECT id, email, password FROM usuarios WHERE email = :email LIMIT 1");
+      $stmt = $pdo -> prepare
+        ("SELECT id, email, password, rol, nombre
+        FROM usuarios 
+        WHERE email = :email 
+        LIMIT 1"
+      );
       $stmt -> execute(['email' => $email]);
       $usuario = $stmt -> fetch();
 
@@ -37,7 +42,9 @@
         session_regenerate_id(true);
 
         $_SESSION['usuario_id'] = $usuario['id'];
-        $_SESSION['email']   = $usuario['email'];
+        $_SESSION['email']      = $usuario['email'];
+        $_SESSION['nombre']     = $usuario['nombre'];
+        $_SESSION['rol']        = $usuario['rol'];
 
         header("location: /");
         exit;

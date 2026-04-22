@@ -14,7 +14,7 @@
 
 html, body {
     font-family: 'Inter', sans-serif;
-    color: #E8EAEF;
+    color: #000;
     margin: 0;
     height: 100%;
 }
@@ -28,10 +28,10 @@ html, body {
     align-items: center;
 
     background-color: #1C4293;
-    color: #E8EAEF;
+    color: #F0F0F0;
     padding: 2rem 5rem;
 
-    border: 2px solid #E8EAEF;
+    border: 2px solid #F0F0F0;
     border-radius: 10px 10px 0 0;
     box-sizing: border-box;
 }
@@ -65,17 +65,18 @@ html, body {
 }
 
 .layout {
-    display: flex;
     flex: 1;
+    display: flex;
+    min-height: 0;
 }
 
 .sidebar {
 
-    width: 240px;
+    width: 250px;
     background-color: #1C4293;
-    color: #E8EAEF;
+    color: #F0F0F0;
 
-    border-left: 2px solid #E8EAEF;
+    border-left: 2px solid #F0F0F0;
     border-radius: 0 0 0 10px;
 
     display: flex;
@@ -91,38 +92,27 @@ html, body {
 }
 
 .sidebar-item {
-    color: #E8EAEF;
-    text-decoration: none;
-
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 5px;
+  padding: 10px 7px;
+  color: #F0F0F0;
+  text-decoration: none;
+  border-left: 3px solid transparent;
 }
 
 .sidebar-item.active {
-    box-shadow: 0 2px 6px #FFFFFF;
-    background-color: #2F6CEE;
-    color: #FFFFFF;
+  border-left: 3px solid #F0F0F0;
+  background: none;
+  font-weight: 600;
 }
 
 .sidebar-item:hover {
-    box-shadow: 0 2px 6px #FFFFFF;
-    text-decoration: none;
-    background-color: #E8EAEF;
-    color: #1C4293;
-}
-
-.sidebar-item.active:hover {
-    box-shadow: 0 2px 6px #FFFFFF;
-    background-color: #2F6CEE;
-    color: #FFFFFF;
+  background-color: #2D4791;
 }
 
 .sidebar-footer {
     height: 450px;
 
     padding: 1rem;
-    border-top: 1px solid #E8EAEF;
+    border-top: 1px solid #F0F0F0;
 }
 
 .logout {
@@ -131,23 +121,40 @@ html, body {
 
 .content {
     flex: 1;
-    padding: 30px;
-    background-color: #E8EAEF;
+    display: flex;
+    background-color: #F0F0F0;
+    min-height: 0;
 }
 
 body {
-    margin: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+.no-sidebar .layout {
+    display: block;
+}
+
+.no-sidebar .content {
+    justify-content: center;
+    align-items: center;
+}
+
+.no-sidebar .content-wrapper {
+  justify-content: center;
+  align-items: center;
+}
+
 .content-wrapper {
-    max-width: 1000px;
-    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
 }
 
 .login-container {
+
     flex: 1;
     display: flex;
     justify-content: center;
@@ -156,12 +163,12 @@ body {
 
 .login-card {
     position: relative;
-    width: 48%;
-    max-width: 70%;
+    width: 100%;
+    max-width: 400px;
     height: 300px;
     padding: 1.5rem;
     border-radius: 10px;
-    background-color: #E8EAEF;
+    background-color: #F0F0F0;
     border: 2px solid #1C4293;
     text-align: center;
 }
@@ -208,7 +215,7 @@ body {
     padding: 0.6rem;
     margin-bottom: 8px;
     border-radius: 6px;
-    border: 1px #D3D3D3;
+    border: 1px solid #D3D3D3;
     font-size: 14px;
 }
 
@@ -257,4 +264,39 @@ body {
     color: #FF2C2C;
     margin-bottom: 1rm;
     font-size: 14px;
+}
+
+.dashboard {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.card {
+    flex: 0 1 300px;
+    background-color: #d9d9d9;
+    padding: 20px 40px;
+    text-align: center;
+    border-radius: 8px;
+    min-width: 240px;
+    box-shadow: 0 4px 10px #000000;
+}
+
+.card p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 16px;
+  color: #000;
+}
+
+.card span {
+  display: block;
+  margin-top: 12px;
+  font-size: 45px;
+  font-weight: 700;
+  color: #000;
 }
