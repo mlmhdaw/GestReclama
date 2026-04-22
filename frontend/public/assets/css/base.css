@@ -1,0 +1,74 @@
+/*=========================
+    RESET BÁSICO
+  =========================*/
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+/*=========================
+    FUENTES
+  =========================*/
+  @font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+/*=========================
+    BASE HTML
+  =========================*/
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #000;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+/*=========================
+    ELEMENTOS BASE
+  =========================*/
+  /* imágenes */
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+  /* inputs, botones */
+    input,
+    button,
+    textarea,
+    select {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+  /* botones */
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+  /* enlaces */
+    a {
+      text-decoration: none;
+      color: inherit;
+    }

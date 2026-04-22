@@ -3,18 +3,18 @@
   require_once '../config/app.php';
 
   $tituloVista   = "Panel principal";
+  $menuActivo    = 'panel';
 
   ob_start();
-
 ?>
 
-<div class="dashboard">
-  <div class="card">
+<div class="layout-grid">
+  <div class="card card--dashboard">
     <p>Reclamaciones pendientes</p>
     <span>0</span>
   </div>
   
-  <div class="card">
+  <div class="card card--dashboard">
     <p>Notificaciones pendientes</p>
     <span>0</span>
   </div>

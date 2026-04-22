@@ -7,8 +7,8 @@
   require_once __DIR__ . '/../config/app.php';
   
   $tituloVista = "Login";
-  $sinSidebar  = true;
-  
+  $layoutMode  = 'auth';
+
   $error = '';
   $email = '';
 
@@ -26,14 +26,14 @@
 
       $pdo = Database::getConnection();
 
-      $stmt = $pdo -> prepare
-        ("SELECT id, email, password, rol, nombre
-        FROM usuarios 
-        WHERE email = :email 
-        LIMIT 1"
+      $stmt = $pdo->prepare(
+        "SELECT id, email, password, rol, nombre
+         FROM usuarios 
+         WHERE email = :email 
+         LIMIT 1"
       );
-      $stmt -> execute(['email' => $email]);
-      $usuario = $stmt -> fetch();
+      $stmt->execute(['email' => $email]);
+      $usuario = $stmt->fetch();
 
       if (!$usuario || (!password_verify($password, $usuario['password']))) {
         $error =  "Credenciales incorrectas...";
@@ -55,29 +55,26 @@
   ob_start();
 ?>
 
-<div class="login-container">
-  <div class="login-card">
+<div class="layout-center">
+  <div class="card card--base card--login">
 
-    <h2 class="login-title">GestReclama</h2>
-    <p class="login-subtitle">Acceso al sistema</p>
+    <h2 class="title">GestReclama</h2>
+    <p class="subtitle">Acceso al sistema</p>
 
-    <?php if (!empty($error)): ?>
-      <p class="error"><?= htmlspecialchars($error) ?></p>
-    <?php endif; ?>
+    <form method="POST" action="/login.php" class="form form--login">
 
-    <form id="form-login" method="POST" action="/login.php" class="form-login">
-
-      <div class="form-group">
-        <label for="email">Usuario: </label>
+      <div class="form__group form__group--center">
+        <label for="email">Usuario:</label>
         <input
           type="email" 
           id="email" 
           name="email" 
           value="<?= htmlspecialchars($email) ?>" 
-          placeholder="miemail@dominio.es" required
+          placeholder="miemail@dominio.es" 
+          required
         >
 
-        <label for="password">Contraseña: </label>
+        <label for="password">Contraseña:</label>
         <input
           type="password"
           id="password"
@@ -85,10 +82,20 @@
           placeholder="******"
           required
         >
-
-        <button type="submit" id="btn_entrar" class="btn">Iniciar sesión</button>
-        <a href="" class="pass-recovery">¿Olvidó su contraseña?</a>
       </div>
+
+      <div class="form__error">
+        <?php if (!empty($error)): ?>
+          <p class="error"><?= htmlspecialchars($error) ?></p>
+        <?php endif; ?>
+      </div>
+      
+      <div class="form__actions">
+        <button type="submit" class="btn">Iniciar sesión</button>
+      </div>
+      
+      <a href="" class="link">¿Olvidó su contraseña?</a>
+
     </form>
   </div>
 </div>
