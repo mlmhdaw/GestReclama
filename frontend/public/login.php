@@ -48,27 +48,43 @@
   ob_start();
 ?>
 
-<form id="form_login" method="POST" action="/login.php" class="form-login">
-  <fieldset>
-    <legend>Acceso a GestReclama</legend>
+<div class="login-container">
+  <div class="login-card">
+
+    <h2 class="login-title">GestReclama</h2>
+    <p class="login-subtitle">Acceso al sistema</p>
 
     <?php if (!empty($error)): ?>
       <p class="error"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
-    <label for="email">Email: </label>
-    <input type="email" id="email" name="email" value="<?= htmlspecialchars($email) ?>" placeholder="miemail@dominio.es" required>
+    <form id="form-login" method="POST" action="/login.php" class="form-login">
 
-    <br>
+      <div class="form-group">
+        <label for="email">Usuario: </label>
+        <input
+          type="email" 
+          id="email" 
+          name="email" 
+          value="<?= htmlspecialchars($email) ?>" 
+          placeholder="miemail@dominio.es" required
+        >
 
-    <label for="password">Contraseña: </label>
-    <input type="password" id="password" name="password" placeholder="******" required>
-  </fieldset>
+        <label for="password">Contraseña: </label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="******"
+          required
+        >
 
-  <br>
-
-  <button type="submit" id="btn_entrar" class="btn">Entrar</button>
-</form>
+        <button type="submit" id="btn_entrar" class="btn">Iniciar sesión</button>
+        <a href="" class="pass-recovery">¿Olvidó su contraseña?</a>
+      </div>
+    </form>
+  </div>
+</div>
 
 <?php
   $contenido = ob_get_clean();
